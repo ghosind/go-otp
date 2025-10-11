@@ -8,7 +8,7 @@ import (
 	"github.com/ghosind/go-otp"
 )
 
-func TestTOTPGenerate(t *testing.T) {
+func TestTOTP(t *testing.T) {
 	a := assert.New(t)
 	totps := map[otp.Algorithm]*otp.TOTP{
 		otp.AlgHmacSha1:   otp.NewTOTP(otp.WithAlgorithm(otp.AlgHmacSha1), otp.WithDigits(8)),
@@ -66,4 +66,84 @@ func TestTOTPGenerate(t *testing.T) {
 		a.NilNow(err)
 		a.EqualNow(v.expect, result)
 	}
+}
+
+func TestTOTP_Algorithm(t *testing.T) {
+	a := assert.New(t)
+
+	const invalidAlgorithm otp.Algorithm = 100
+
+	totp := otp.NewTOTP()
+	a.EqualNow(otp.AlgHmacSha1, totp.Algorithm())
+
+	totp = otp.NewTOTP(otp.WithAlgorithm(otp.AlgHmacSha256))
+	a.EqualNow(otp.AlgHmacSha256, totp.Algorithm())
+
+	totp = otp.NewTOTP(otp.WithAlgorithm(otp.AlgHmacSha512))
+	a.EqualNow(otp.AlgHmacSha512, totp.Algorithm())
+
+	totp = otp.NewTOTP(otp.WithAlgorithm(otp.AlgDefault))
+	a.EqualNow(otp.AlgHmacSha1, totp.Algorithm())
+
+	totp = otp.NewTOTP(otp.WithAlgorithm(invalidAlgorithm))
+	a.EqualNow(otp.AlgHmacSha1, totp.Algorithm())
+}
+
+func TestTOTP_Digits(t *testing.T) {
+	a := assert.New(t)
+
+	totp := otp.NewTOTP()
+	a.EqualNow(6, totp.Digits())
+
+	totp = otp.NewTOTP(otp.WithDigits(0))
+	a.EqualNow(6, totp.Digits())
+
+	totp = otp.NewTOTP(otp.WithDigits(-1))
+	a.EqualNow(6, totp.Digits())
+
+	totp = otp.NewTOTP(otp.WithDigits(1))
+	a.EqualNow(1, totp.Digits())
+
+	totp = otp.NewTOTP(otp.WithDigits(8))
+	a.EqualNow(8, totp.Digits())
+
+	totp = otp.NewTOTP(otp.WithDigits(9))
+	a.EqualNow(6, totp.Digits())
+}
+
+func TestTOTP_Period(t *testing.T) {
+	a := assert.New(t)
+
+	totp := otp.NewTOTP()
+	a.EqualNow(int64(30), totp.Period())
+
+	totp = otp.NewTOTP(otp.WithPeriod(0))
+	a.EqualNow(int64(30), totp.Period())
+
+	totp = otp.NewTOTP(otp.WithPeriod(-1))
+	a.EqualNow(int64(30), totp.Period())
+
+	totp = otp.NewTOTP(otp.WithPeriod(10))
+	a.EqualNow(int64(10), totp.Period())
+
+	totp = otp.NewTOTP(otp.WithPeriod(60))
+	a.EqualNow(int64(60), totp.Period())
+}
+
+func TestTOTP_Generate(t *testing.T) {
+	a := assert.New(t)
+	totp := otp.NewTOTP(otp.WithDigits(8))
+	secret := []byte("12345678901234567890")
+	result, err := totp.Generate(secret)
+	a.NilNow(err)
+	a.EqualNow(len(result), 8)
+}
+
+func TestTOTP_GenerateWithTime(t *testing.T) {
+	a := assert.New(t)
+	totp := otp.NewTOTP(otp.WithDigits(8))
+	secret := []byte("12345678901234567890")
+	result, err := totp.GenerateWithTime(time.Unix(59, 0), secret)
+	a.NilNow(err)
+	a.EqualNow(result, "94287082")
 }
