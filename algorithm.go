@@ -12,22 +12,24 @@ import (
 type Algorithm int
 
 const (
-	// HmacSha1 is the HMAC-SHA1 algorithm.
-	HmacSha1 Algorithm = iota
-	// HmacSha256 is the HMAC-SHA256 algorithm.
-	HmacSha256
-	// HmacSha512 is the HMAC-SHA512 algorithm.
-	HmacSha512
+	// AlgDefault is the default algorithm, which is HMAC-SHA1 for TOTP.
+	AlgDefault Algorithm = iota
+	// AlgHmacSha1 is the HMAC-SHA1 algorithm.
+	AlgHmacSha1
+	// AlgHmacSha256 is the HMAC-SHA256 algorithm.
+	AlgHmacSha256
+	// AlgHmacSha512 is the HMAC-SHA512 algorithm.
+	AlgHmacSha512
 )
 
 // getHashFunc returns the hash function corresponding to the given algorithm.
 func getHashFunc(algorithm Algorithm) (func() hash.Hash, error) {
 	switch algorithm {
-	case HmacSha1:
+	case AlgHmacSha1:
 		return sha1.New, nil
-	case HmacSha256:
+	case AlgHmacSha256:
 		return sha256.New, nil
-	case HmacSha512:
+	case AlgHmacSha512:
 		return sha512.New, nil
 	default:
 		return nil, ErrUnsupportedAlgorithm

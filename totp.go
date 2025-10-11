@@ -8,7 +8,7 @@ import (
 const (
 	defaultTOTPDigits    = 6
 	defaultTOTPPeriod    = 30
-	defaultTOTPAlgorithm = HmacSha1
+	defaultTOTPAlgorithm = AlgHmacSha1
 )
 
 // TOTP is Time-based One-Time Password algorithm implementation.
@@ -34,7 +34,7 @@ func NewTOTP(opts ...Option) *TOTP {
 
 // Algorithm returns the hashing algorithm used in TOTP. If not set, it defaults to HmacSha1.
 func (t *TOTP) Algorithm() Algorithm {
-	if t.algorithm < HmacSha1 || t.algorithm > HmacSha512 {
+	if t.algorithm < AlgHmacSha1 || t.algorithm > AlgHmacSha512 {
 		return defaultTOTPAlgorithm
 	}
 	return t.algorithm
