@@ -22,6 +22,18 @@ const (
 	AlgHmacSha512
 )
 
+// String returns the string representation of the Algorithm.
+func (a Algorithm) String() string {
+	switch a {
+	case AlgHmacSha256:
+		return "SHA256"
+	case AlgHmacSha512:
+		return "SHA512"
+	default:
+		return "SHA1"
+	}
+}
+
 // getHashFunc returns the hash function corresponding to the given algorithm.
 func getHashFunc(algorithm Algorithm) (func() hash.Hash, error) {
 	switch algorithm {
