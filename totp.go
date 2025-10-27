@@ -13,8 +13,8 @@ const (
 
 // TOTP is Time-based One-Time Password algorithm implementation.
 type TOTP struct {
-	digits    int
 	algorithm Algorithm
+	digits    int
 	period    int64
 }
 
@@ -78,16 +78,5 @@ func (t *TOTP) generate(msg, secret []byte) (string, error) {
 		return "", err
 	}
 
-	if _, err := hashFunc.Write(msg); err != nil {
-		return "", err
-	}
-
-	hash := hashFunc.Sum(nil)
-	offset := hash[len(hash)-1] & 0x0f
-	val := ((uint64(hash[offset]) & 0x7f) << 24) |
-		((uint64(hash[offset+1]) & 0xff) << 16) |
-		((uint64(hash[offset+2]) & 0xff) << 8) |
-		(uint64(hash[offset+3]) & 0xff)
-
-	return encode(val, t.Digits()), nil
+	return generateOTP(hashFunc, msg, t.Digits())
 }
