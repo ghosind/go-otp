@@ -10,7 +10,7 @@
 go-otp is a Go library for generating OTP (One-Time Password) codes. It currently supports TOTP (Time-based One-Time Password, RFC 6238) and is suitable for two-factor authentication, dynamic password, and other security scenarios.
 
 - TOTP: Time-based One-Time Password ([RFC 6238](https://tools.ietf.org/html/rfc6238))
-- HOTP: HMAC-based One-Time Password ([RFC 4226](https://tools.ietf.org/html/rfc4226)) (Not implemented yet)
+- HOTP: HMAC-based One-Time Password ([RFC 4226](https://tools.ietf.org/html/rfc4226))
 
 ## Features
 
@@ -58,11 +58,16 @@ func main() {
 
 ## API Reference
 
+### TOTP
+
 - `NewTOTP(options...)` creates a TOTP instance
 - `Generate(secret []byte)` generates a code for the current time
 - `GenerateWithTime(t time.Time, secret []byte)` generates a code for a specific time
 
-See more usage in the [GoDoc](https://pkg.go.dev/github.com/ghosind/go-otp).
+### HOTP
+
+- `NewHOTP(options...)` creates a HOTP instance
+- `Generate(counter uint64, secret []byte)` generates a code for a given counter
 
 ## Testing
 
