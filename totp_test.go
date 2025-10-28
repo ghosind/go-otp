@@ -1,6 +1,7 @@
 package otp_test
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -146,4 +147,13 @@ func TestTOTP_GenerateWithTime(t *testing.T) {
 	result, err := totp.GenerateWithTime(time.Unix(59, 0), secret)
 	a.NilNow(err)
 	a.EqualNow(result, "94287082")
+}
+
+func ExampleTOTP() {
+	totp := otp.NewTOTP()
+	secret := []byte("12345678901234567890")
+	code, _ := totp.GenerateWithTime(time.Date(2006, time.January, 2, 15, 4, 5, 0, time.UTC), secret)
+	fmt.Println(code)
+	// Output:
+	// 413931
 }

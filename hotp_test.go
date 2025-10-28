@@ -1,6 +1,7 @@
 package otp_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/ghosind/go-assert"
@@ -52,4 +53,13 @@ func TestHOTP_Generate(t *testing.T) {
 	code, err := hotp.Generate(0, secret)
 	a.NilNow(err)
 	a.EqualNow("84755224", code)
+}
+
+func ExampleHOTP() {
+	hotp := otp.NewHOTP()
+	secret := []byte("12345678901234567890")
+	code, _ := hotp.Generate(0, secret)
+	fmt.Println(code)
+	// Output:
+	// 755224
 }
