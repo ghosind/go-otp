@@ -18,6 +18,7 @@ go-otp is a Go library for generating OTP (One-Time Password) codes. It currentl
 - Customizable code length and period
 - Compatible with popular TOTP apps (e.g., Google Authenticator)
 - Simple and easy-to-use API
+- URI generation for easy integration with authenticator apps
 
 ## Installation
 
@@ -63,11 +64,13 @@ func main() {
 - `NewTOTP(options...)` creates a TOTP instance
 - `Generate(secret []byte)` generates a code for the current time
 - `GenerateWithTime(t time.Time, secret []byte)` generates a code for a specific time
+- `GetURI(accountName, issuer string, secret []byte)` generates an otpauth URI for use with authenticator apps
 
 ### HOTP
 
 - `NewHOTP(options...)` creates a HOTP instance
 - `Generate(counter uint64, secret []byte)` generates a code for a given counter
+- `GetURI(accountName, issuer string, secret []byte, counter uint64)` generates an otpauth URI for use with authenticator apps
 
 ## Testing
 
