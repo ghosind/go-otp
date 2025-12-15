@@ -80,3 +80,7 @@ func (t *TOTP) generate(msg, secret []byte) (string, error) {
 
 	return generateOTP(hashFunc, msg, t.Digits())
 }
+
+func (t *TOTP) GetURI(accountName, issuer string, secret []byte) (string, error) {
+	return getOTPURI("totp", accountName, issuer, secret, t.Algorithm(), t.Digits(), t.Period())
+}

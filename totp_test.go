@@ -149,6 +149,25 @@ func TestTOTP_GenerateWithTime(t *testing.T) {
 	a.EqualNow(result, "94287082")
 }
 
+func TestTOTP_GetURI(t *testing.T) {
+	a := assert.New(t)
+
+	topt := otp.NewTOTP()
+	secret := []byte("12345678901234567890")
+	expectedURI := "otpauth://totp/ExampleIssuer:user%40example.com?secret=GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ&issuer=ExampleIssuer"
+
+	uri, err := topt.GetURI("user@example.com", "ExampleIssuer", secret)
+	a.NilNow(err)
+	URLsEqual(a, expectedURI, uri)
+
+	totp := otp.NewTOTP(otp.WithAlgorithm(otp.AlgHmacSha256), otp.WithDigits(8), otp.WithPeriod(60))
+	expectedURI = "otpauth://totp/ExampleIssuer:user%40example.com?secret=GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ&issuer=ExampleIssuer&algorithm=SHA256&digits=8&period=60"
+
+	uri, err = totp.GetURI("user@example.com", "ExampleIssuer", secret)
+	a.NilNow(err)
+	URLsEqual(a, expectedURI, uri)
+}
+
 func ExampleTOTP() {
 	totp := otp.NewTOTP()
 	secret := []byte("12345678901234567890")

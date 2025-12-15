@@ -55,6 +55,25 @@ func TestHOTP_Generate(t *testing.T) {
 	a.EqualNow("84755224", code)
 }
 
+func TestHOTP_GetURI(t *testing.T) {
+	a := assert.New(t)
+
+	hotp := otp.NewHOTP()
+	secret := []byte("12345678901234567890")
+	expectedURI := "otpauth://hotp/ExampleIssuer:user%40example.com?secret=GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ&issuer=ExampleIssuer&counter=0"
+
+	uri, err := hotp.GetURI("user@example.com", "ExampleIssuer", secret, 0)
+	a.NilNow(err)
+	URLsEqual(a, expectedURI, uri)
+
+	hotp = otp.NewHOTP(otp.WithDigits(8))
+	expectedURI = "otpauth://hotp/ExampleIssuer:user%40example.com?secret=GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ&issuer=ExampleIssuer&digits=8&counter=0"
+
+	uri, err = hotp.GetURI("user@example.com", "ExampleIssuer", secret, 0)
+	a.NilNow(err)
+	URLsEqual(a, expectedURI, uri)
+}
+
 func ExampleHOTP() {
 	hotp := otp.NewHOTP()
 	secret := []byte("12345678901234567890")

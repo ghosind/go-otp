@@ -43,3 +43,7 @@ func (h *HOTP) Generate(counter uint64, secret []byte) (string, error) {
 
 	return generateOTP(hashFunc, msg, h.Digits())
 }
+
+func (h *HOTP) GetURI(accountName, issuer string, secret []byte, counter uint64) (string, error) {
+	return getOTPURI("hotp", accountName, issuer, secret, AlgHmacSha1, h.Digits(), int64(counter))
+}
